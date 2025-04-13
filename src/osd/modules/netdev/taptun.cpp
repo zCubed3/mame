@@ -337,14 +337,28 @@ int netdev_tap::recv_dev(uint8_t **buf)
 {
 	int len;
 	if(m_fd == -1) return 0;
+
+	// Beware! This may break, I'm not quite sure. I threw this workaround together as a test and it ended up sticking
+	// 	- Liam (zCubed)
+
 	// exit if we didn't receive anything, got an error, got a broadcast or multicast packet,
 	// are in promiscuous mode or got a packet with our mac.
-	do {
-		len = read(m_fd, m_buf, sizeof(m_buf));
-	} while((len > 0) && memcmp(&get_mac()[0], m_buf, 6) && !get_promisc() && !(m_buf[0] & 1));
+	len = read(m_fd, m_buf, sizeof(m_buf));
+	
+	if (len > 0) {
 
-	if (len > 0)
+		/*
+		// Temporary debugging code to prove MAC issue on Indy
+		uint64_t mac_disp_packet;
+		uint64_t mac_disp_this;
+
+		memcpy(&mac_disp_this, get_mac(), 6);
+		memcpy(&mac_disp_packet, m_buf, 6); // Unsafe!!! Will crash if len < 6
+		osd_printf_verbose("GOT PACKET ON MAC %12x FOR MAC %12x\n", mac_disp_this, mac_disp_packet);
+		*/
+
 		len = finalise_frame(m_buf, len);
+	}
 
 	*buf = m_buf;
 	return (len == -1)?0:len;
