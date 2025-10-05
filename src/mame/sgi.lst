@@ -1,0 +1,16 @@
+// license:BSD-3-Clause
+// copyright-holders:Aaron Giles
+/*******************************************************************************
+
+    tiny.lst
+
+    List of all enabled drivers for compile target. This is not an automatically
+    generated file, and it should be manually updated when a new driver is added.
+
+*******************************************************************************/
+
+@source:sgi/indy_indigo2.cpp
+indy_4610
+indy_4613
+indy_5015
+indigo2_4415
