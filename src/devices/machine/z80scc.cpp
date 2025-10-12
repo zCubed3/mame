@@ -1023,6 +1023,7 @@ z80scc_channel::z80scc_channel(const machine_config &mconfig, const char *tag, d
 	m_wr0 = m_wr1 = m_wr2 = m_wr3  = m_wr4  = m_wr5  = m_wr6  = m_wr7 = m_wr7p = m_wr8
 		= m_wr10 = m_wr11 = m_wr12 = m_wr13 = m_wr14 = m_wr15 = 0;
 
+	#ifndef SGI_USE_HUGE_FIFO
 	for (auto & elem : m_rx_data_fifo)
 		elem = 0;
 	for (auto & elem : m_rx_error_fifo)  // TODO: Status FIFO needs to be fixed
@@ -1031,6 +1032,13 @@ z80scc_channel::z80scc_channel(const machine_config &mconfig, const char *tag, d
 		elem = 0;
 	for (auto & elem : m_tx_error_fifo) //  TODO: Status FIFO needs to be fixed
 		elem = 0;
+	#else
+	m_rx_data_fifo = new uint8_t[SGI_HUGE_FIFO_SIZE]();
+	m_rx_error_fifo = new uint8_t[SGI_HUGE_FIFO_SIZE]();
+	
+	m_tx_data_fifo = new uint8_t[SGI_HUGE_FIFO_SIZE]();
+	m_tx_error_fifo = new uint8_t[SGI_HUGE_FIFO_SIZE]();
+	#endif
 }
 
 
@@ -1045,9 +1053,19 @@ void z80scc_channel::device_start()
 
 	m_uart->m_wr0_ptrbits = 0;
 
+	#ifndef SGI_USE_HUGE_FIFO
+
 	m_rx_fifo_sz = (m_uart->m_variant & z80scc_device::SET_ESCC) ? 8 : 3;
 
 	m_tx_fifo_sz = (m_uart->m_variant & z80scc_device::SET_ESCC) ? 4 : 1;
+
+	#else
+
+	m_rx_fifo_sz = SGI_HUGE_FIFO_SIZE;
+
+	m_tx_fifo_sz = SGI_HUGE_FIFO_SIZE;
+
+	#endif
 
 	m_rxc   = 0x00;
 	m_txc   = 0x00;
@@ -1088,13 +1106,17 @@ void z80scc_channel::device_start()
 	save_item(NAME(m_wr13));
 	save_item(NAME(m_wr14));
 	save_item(NAME(m_wr15));
+	#ifndef SGI_USE_HUGE_FIFO
 	save_item(NAME(m_tx_data_fifo));
 	save_item(NAME(m_tx_error_fifo)); //  TODO: Status FIFO needs to be fixed
+	#endif
 	save_item(NAME(m_tx_fifo_rp));
 	save_item(NAME(m_tx_fifo_wp));
 	save_item(NAME(m_tx_fifo_sz));
+	#ifndef SGI_USE_HUGE_FIFO
 	save_item(NAME(m_rx_data_fifo));
 	save_item(NAME(m_rx_error_fifo)); //  TODO: Status FIFO needs to be fixed
+	#endif
 	save_item(NAME(m_rx_fifo_rp));
 	save_item(NAME(m_rx_fifo_wp));
 	save_item(NAME(m_rx_fifo_sz));
@@ -1116,7 +1138,6 @@ void z80scc_channel::device_start()
 	save_item(NAME(m_delayed_tx_brg_change));
 	save_item(NAME(m_brg_counter));
 }
-
 
 //-------------------------------------------------
 //  reset - reset channel status

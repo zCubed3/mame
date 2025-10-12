@@ -35,6 +35,13 @@
 
 #pragma once
 
+// Janky SGI workaround from zCubed, do not expect a well tested solution here!
+// This workaround just allocates a huge upfront FIFO buffer and uses that to avoid overflows
+//
+// For any MAME maintainers curious, the Indy machines will overflow the FIFO buffer basically instantly whenever booting or doing anything really fast
+#define SGI_USE_HUGE_FIFO
+#define SGI_HUGE_FIFO_SIZE (8192 * 4)
+
 #include "machine/z80daisy.h"
 #include "diserial.h"
 
@@ -257,8 +264,13 @@ protected:
 	unsigned int m_delayed_tx_brg_change;
 
 	// receiver state
+	#ifndef SGI_USE_HUGE_FIFO
 	uint8_t m_rx_data_fifo[8];    // receive data FIFO
 	uint8_t m_rx_error_fifo[8];   // receive error FIFO
+	#else
+	uint8_t *m_rx_data_fifo;
+	uint8_t *m_rx_error_fifo;
+	#endif
 	uint8_t m_rx_error;       // current receive error
 	//int m_rx_fifo         // receive FIFO pointer
 	int m_rx_fifo_rp;       // receive FIFO read pointer
@@ -276,8 +288,13 @@ protected:
 	int m_ri;       // ring indicator latch
 
 	// transmitter state
-	uint8_t m_tx_data_fifo[4];  // data FIFO
-	uint8_t m_tx_error_fifo[4]; // error FIFO
+	#ifndef SGI_USE_HUGE_FIFO
+	uint8_t m_tx_data_fifo[8];  // data FIFO
+	uint8_t m_tx_error_fifo[8]; // error FIFO
+	#else
+	uint8_t *m_tx_data_fifo;
+	uint8_t *m_tx_error_fifo;
+	#endif
 	int m_tx_fifo_rp;           // FIFO read pointer
 	int m_tx_fifo_wp;           // FIFO write pointer
 	int m_tx_fifo_sz;           // FIFO size
