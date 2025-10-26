@@ -28,6 +28,8 @@ CPUS["Z80"] = true
 CPUS["ARM"] = true
 CPUS["UPD7810"] = true
 CPUS["NEC"] = true
+CPUS["MIPS1"] = true
+CPUS["DSP56000"] = true
 
 --------------------------------------------------
 -- Specify all the sound cores necessary for the
@@ -47,6 +49,9 @@ SOUNDS["VOTRAX_SC01"] = true
 VIDEOS["MC6845"] = true
 VIDEOS["PS2GS"] = true
 VIDEOS["PS2GIF"] = true
+VIDEOS["BT47X"] = true
+VIDEOS["BT431"] = true
+VIDEOS["BT45X"] = true
 
 --------------------------------------------------
 -- specify available machine cores
@@ -85,6 +90,10 @@ MACHINES["OUTPUT_LATCH"] = true
 MACHINES["PS2INTC"] = true     
 MACHINES["VOTRAXTNT"] = true    
 MACHINES["ACIA6850"] = true
+MACHINES["DP8573A"] = true
+MACHINES["AM79C90"] = true
+MACHINES["68681"] = true
+MACHINES["WTL3132"] = true
 
 --------------------------------------------------
 -- specify available bus cores
@@ -132,6 +141,21 @@ files{
     MAME_DIR .. "src/mame/sgi/vino.cpp",
     MAME_DIR .. "src/mame/sgi/mc.cpp",
     MAME_DIR .. "src/mame/sgi/hal2.cpp",
+
+	MAME_DIR .. "src/mame/sgi/ip6.cpp",
+	MAME_DIR .. "src/mame/sgi/ip12.cpp",
+	MAME_DIR .. "src/mame/sgi/ip20.cpp",
+	MAME_DIR .. "src/mame/sgi/pic1.cpp",
+	MAME_DIR .. "src/mame/sgi/hpc1.cpp",
+	MAME_DIR .. "src/mame/sgi/int2.cpp",
+	MAME_DIR .. "src/mame/sgi/light.cpp",
+	MAME_DIR .. "src/mame/sgi/vc1.cpp",
+	MAME_DIR .. "src/mame/sgi/kbd.cpp",
+	MAME_DIR .. "src/mame/sgi/ctl1.cpp",
+	MAME_DIR .. "src/mame/sgi/sgi_gr1.cpp",
+	MAME_DIR .. "src/mame/sgi/sgi_re2.cpp",
+	MAME_DIR .. "src/mame/sgi/sgi_xmap2.cpp",
+	MAME_DIR .. "src/mame/sgi/sgi_ge5.cpp",
 }
 end
 
