@@ -14,3 +14,16 @@ indy_4610
 indy_4613
 indy_5015
 indigo2_4415
+
+@source:sgi/ip6.cpp
+pi4d20
+pi4d25
+
+@source:sgi/ip12.cpp
+pi4d30
+pi4d35
+indigo
+
+@source:sgi/ip20.cpp
+indigo_r4000
+indigo_r4400
